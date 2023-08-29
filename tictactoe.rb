@@ -1,12 +1,16 @@
 module TicTacToe
 
     class Game
-        def initialize
+        def initialize players
             @board = Board.new
+
+            @player1, @player2 = players
         end
 
         def play
             @board.show
+            player = Player.new "X"
+            player.execute_turn @board
         end
     end
 
@@ -32,4 +36,15 @@ module TicTacToe
         end
     end
 
+    class Player
+        attr_reader :marker
+
+        def initialize marker
+            @marker = marker
+        end
+
+        def execute_turn board
+            raise NotImplementedError
+        end
+    end
 end
