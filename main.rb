@@ -2,4 +2,5 @@ require "./tictactoe.rb"
 
 include TicTacToe
 
-Game.new
+game = Game.new
+game.play
