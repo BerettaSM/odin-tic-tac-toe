@@ -4,7 +4,14 @@ module TicTacToe
         def initialize players
             @board = Board.new
 
-            @player1, @player2 = players
+            @player_1, @player_2 = players
+            @current_player = @player_1
+        end
+
+        def next_player
+            cur = @current_player
+            @current_player = cur.equal?(@player_2) ? @player_1 : @player_2
+            cur
         end
 
         def play
