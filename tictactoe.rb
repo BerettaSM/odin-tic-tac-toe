@@ -21,16 +21,17 @@ module TicTacToe
                 @board.attribute_position chosen_pos, player.marker
 
                 if @board.is_winner? player.marker
-                    puts "#{player.marker} has won!"
+                    @board.show
+                    puts "'#{player.marker}' has won!"
                     break
                 end
 
                 if !@board.has_empty_positions?
-                    puts "No more positions."
+                    @board.show
+                    puts "Tic tac toe! No winners!"
                     break
                 end
             end
-            puts "Thanks for playing!"
         end
 
         private
@@ -42,16 +43,18 @@ module TicTacToe
         end
 
         def get_player_input player
+            print "Choose a position for '#{player.marker}': "
+            
             loop do
                 chosen_position = player.execute_turn @board.cells
                 
                 if !is_integer?(chosen_position) || !is_valid_position(chosen_position.to_i)
-                    puts "Invalid position."
+                    print "Invalid position. Try again: "
                     next
                 end
 
                 if @board.is_position_taken? chosen_position.to_i
-                    puts "Position already taken."
+                    print "Position already taken. Choose another: "
                     next
                 end
 
@@ -95,10 +98,11 @@ module TicTacToe
         end
 
         def show
-            clear_console
             separator = " | "
             dashed_line = "  -----------"
             rows = @cells.slice(1..-1).each_slice(3).to_a
+
+            clear_console
             
             rows.each_with_index do |row, row_index|
                 puts dashed_line
@@ -109,6 +113,7 @@ module TicTacToe
                 end
                 puts ""
             end
+
             puts dashed_line
         end
     end
