@@ -12,16 +12,25 @@ module TicTacToe
         end
 
         def play
-            @board.show
-            player = HumanPlayer.new "X"
-            
+            loop do
+                @board.show
 
-            3.times do
-                play, marker = get_next_player_input
-                
-                puts marker
-                puts play
+                player = next_player
+                chosen_pos = get_player_input player
+
+                @board.attribute_position chosen_pos, player.marker
+
+                if @board.is_winner? player.marker
+                    puts "#{player.marker} has won!"
+                    break
+                end
+
+                if !@board.has_empty_positions?
+                    puts "No more positions."
+                    break
+                end
             end
+            puts "Thanks for playing!"
         end
 
         private
@@ -32,11 +41,9 @@ module TicTacToe
             cur
         end
 
-        def get_next_player_input
-            player = next_player
-
+        def get_player_input player
             loop do
-                chosen_position = player.execute_turn @board.clone
+                chosen_position = player.execute_turn @board.cells
                 
                 if !is_integer?(chosen_position) || !is_valid_position(chosen_position.to_i)
                     puts "Invalid position."
@@ -48,7 +55,7 @@ module TicTacToe
                     next
                 end
 
-                return chosen_position.to_i, player.marker
+                return chosen_position.to_i
             end
         end
 
@@ -58,19 +65,29 @@ module TicTacToe
     end
 
     class Board
-        attr_reader :cells
-
         def initialize
-            @cells = Array.new 9, nil
+            @cells = Array.new 10, nil
+        end
+
+        def cells
+            @cells.clone
+        end
+
+        def attribute_position position, marker
+            @cells[position] = marker
         end
 
         def is_position_taken? pos
             cells[pos] != nil
         end
 
+        def has_empty_positions?
+            @cells.slice(1..-1).any? nil
+        end
+
         def is_winner? marker
             LINES.each do |line|
-                if line.all? { |cell| cell == marker }
+                if line.all? { |pos| @cells[pos] == marker }
                     return true
                 end
             end
@@ -80,7 +97,7 @@ module TicTacToe
         def show
             separator = " | "
             dashed_line = "  -----------"
-            rows = @cells.each_slice(3).to_a
+            rows = @cells.slice(1..-1).each_slice(3).to_a
             
             rows.each_with_index do |row, row_index|
                 puts dashed_line
