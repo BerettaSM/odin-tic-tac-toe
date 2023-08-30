@@ -95,6 +95,7 @@ module TicTacToe
         end
 
         def show
+            clear_console
             separator = " | "
             dashed_line = "  -----------"
             rows = @cells.slice(1..-1).each_slice(3).to_a
