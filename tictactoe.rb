@@ -44,7 +44,7 @@ module TicTacToe
 
         def get_player_input player
             print "Choose a position for '#{player.marker}': "
-            
+
             loop do
                 chosen_position = player.execute_turn @board.cells
                 
@@ -77,7 +77,9 @@ module TicTacToe
         end
 
         def attribute_position position, marker
-            @cells[position] = marker
+            if !is_position_taken? position
+                @cells[position] = marker
+            end
         end
 
         def is_position_taken? pos
@@ -86,6 +88,10 @@ module TicTacToe
 
         def has_empty_positions?
             @cells.slice(1..-1).any? nil
+        end
+
+        def get_empty_positions
+            (1..9).filter_map { |pos| @cells[pos] == nil && pos }
         end
 
         def is_winner? marker
@@ -115,6 +121,7 @@ module TicTacToe
             end
 
             puts dashed_line
+            puts ""
         end
     end
 
